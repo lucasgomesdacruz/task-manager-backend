@@ -1,18 +1,12 @@
 const express = require("express");
-const TaskModel = require("../models/taks.model");
+
+const TaskController = require("../controllers/task.controller");
+const TaskModel = require("../models/task.model");
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    try {
-        const tasks = await TaskModel.find({});
-        res.status(200).send(tasks);
-    } catch (err) {
-        res.status(500).send({
-            message: "Error fetching tasks",
-            error: err,
-        });
-    }
+    return new TaskController(req, res).getTasks();
 });
 
 router.get("/:id", async (req, res) => {
@@ -27,7 +21,7 @@ router.get("/:id", async (req, res) => {
 
         return res.status(200).send(task);
     } catch (error) {
-        res.status(500).send(error.mensage);
+        res.status(500).send(error.menssage);
     }
 });
 
@@ -39,7 +33,7 @@ router.post("/", async (req, res) => {
 
         res.status(201).send(newTask);
     } catch (error) {
-        res.status(500).send(error.mensage);
+        res.status(500).send(error.menssage);
     }
 });
 
@@ -84,7 +78,7 @@ router.delete("/:id", async (req, res) => {
 
         res.status(200).send(deletedTask);
     } catch (error) {
-        res.status(500).send(error.mensage);
+        res.status(500).send(error.menssage);
     }
 });
 
