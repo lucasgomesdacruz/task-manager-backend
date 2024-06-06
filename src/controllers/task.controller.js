@@ -14,5 +14,23 @@ class TaskController {
             this.res.status(500).send(error.menssage);
         }
     }
+
+    async getTasksById() {
+        try {
+            const taskId = this.req.params.id;
+
+            const task = await TaskModel.findById(taskId);
+
+            if (!task) {
+                return this.res
+                    .status(404)
+                    .send("Essa tarefa não foi encontrada.");
+            }
+
+            return this.res.status(200).send(task);
+        } catch (error) {
+            res.status(500).send(error.menssage);
+        }
+    }
 }
 module.exports = TaskController;
