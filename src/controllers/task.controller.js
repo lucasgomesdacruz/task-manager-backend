@@ -1,5 +1,12 @@
+const { mongoose } = require("mongoose");
+
 const TaskModel = require("../models/task.model");
-const { notFoundError } = require("../errors/mongodb.errors");
+
+const {
+    notFoundError,
+    objectCastIdError,
+} = require("../errors/mongodb.errors");
+
 const { notAllowedFieldsToUpdateError } = require("../errors/general.errors");
 
 class TaskController {
@@ -13,7 +20,7 @@ class TaskController {
             const tasks = await TaskModel.find({});
             this.res.status(200).send(tasks);
         } catch (error) {
-            this.res.status(500).send(error.menssage);
+            this.res.status(500).send(error.message);
         }
     }
 
@@ -29,7 +36,10 @@ class TaskController {
 
             return this.res.status(200).send(task);
         } catch (error) {
-            res.status(500).send(error.menssage);
+            if (error instanceof mongoose.Error.CastError) {
+                return objectCastIdError(this.res);
+            }
+            res.status(500).send(error.message);
         }
     }
 
@@ -41,7 +51,7 @@ class TaskController {
 
             this.res.status(201).send(newTask);
         } catch (error) {
-            this.res.status(500).send(error.menssage);
+            this.res.status(500).send(error.message);
         }
     }
 
@@ -69,6 +79,9 @@ class TaskController {
             await taskToUpdate.save();
             return this.res.status(200).send(taskToUpdate);
         } catch (error) {
+            if (error instanceof mongoose.Error.CastError) {
+                return objectCastIdError(this.res);
+            }
             return this.res.status(500).send(error.message);
         }
     }
@@ -87,7 +100,11 @@ class TaskController {
 
             this.res.status(200).send(deletedTask);
         } catch (error) {
-            this.res.status(500).send(error.menssage);
+            if (error instanceof mongoose.Error.CastError) {
+                return objectCastIdError(this.res);
+            }
+
+            this.res.status(500).send(error.message);
         }
     }
 }
